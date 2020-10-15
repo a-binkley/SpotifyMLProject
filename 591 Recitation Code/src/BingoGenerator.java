@@ -8,7 +8,7 @@ public class BingoGenerator {
 			bingo_spots.add(i, i+1);
 		}
 		Collections.shuffle(bingo_spots);
-		System.out.println(bingo_spots.toString());
+		System.out.println("Bingo board: " + bingo_spots.toString());
 	}
 
 }
