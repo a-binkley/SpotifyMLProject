@@ -12,7 +12,7 @@ public class Deck {
 				int cardPoints = 0;
 				if (j == 0) {
 					cardValue = "A" + suitChars[i];
-					cardPoints = 1;
+					cardPoints = 11;
 				} else if (j == 9) {
 					cardValue = "T" + suitChars[i];
 					cardPoints = 10;

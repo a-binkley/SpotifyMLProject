@@ -50,7 +50,7 @@ public class BlackjackSolitaire {
 						for (int k = 0; k < board[current_space-1].value.length(); k++) {
 							padding_space = padding_space.substring(1);
 						}
-						System.out.print(padding_space + board[current_space-1]);
+						System.out.print(padding_space + board[current_space-1].value);
 					} else {
 						// Display the space number
 						for (int k = 0; k < ("" + current_space).length(); k++) {
@@ -60,14 +60,14 @@ public class BlackjackSolitaire {
 					}
 				} else {
 					//Display the discard square
-					int current_space = 16 + (i*2) + j;
+					int current_space = 17 + (i*2) + j;
 					String padding_space = "   ";
 					if (board[current_space-1] != null) {
 						// Display the given card value
 						for (int k = 0; k < board[current_space-1].value.length(); k++) {
 							padding_space = padding_space.substring(1);
 						}
-						System.out.print(padding_space + board[current_space-1]);
+						System.out.print(padding_space + board[current_space-1].value);
 					} else {
 						// Display the space number
 						for (int k = 0; k < ("" + current_space).length(); k++) {
@@ -87,31 +87,171 @@ public class BlackjackSolitaire {
 	 */
 	public boolean placeCard(Card c, int location) {
 		// Check if the chosen target location is invalid
-		if (board[location-1] != null) {
-			System.out.println("ERROR: Cannot place card in already full spot.");
-			//call to repeat prompt method
+		if (location > 20 || location < 1) {
+			System.out.println("Invalid target location.");
 			return false;
 		}
+		if (board[location-1] != null) {
+			System.out.println("ERROR: Cannot place card in already full spot.");
+			return false;
+		} 
 		// If the target is valid, place the card there and update board_filled and point arrays
 		board[location-1] = c;
 		return true;
 	}
 	
 	/*
+	 * Helper function for calculateScore() that calculates the points from a given row
+	 */
+	public int getRowOrColPoints(int sum, int aces) {
+		int rowPoints = 0;
+		if (sum > 21 && aces > 0) {
+			// Get the highest possible score under 21 by reducing ace point counts
+			int overcount = sum - 21;
+			if (overcount > (aces * 10)) {
+				sum = 0; // Bust
+			} else {
+				if (overcount % 10 != 0) {
+					sum -= 10 * (overcount / 10 + 1); // Reduce ace points to get score under 22
+				} else {
+					sum = 21;
+				}
+			}
+		}
+		if (sum == 21) {
+			rowPoints = 7;
+		} else if (sum > 21) {
+			rowPoints = 0;
+		} else if (sum < 17) {
+			rowPoints = 1;
+		} else {
+			rowPoints = sum - 15;
+		}
+		sum = 0;
+		return rowPoints;
+	}
+	
+	/*
 	 * Calculate the final score for the game
 	 */
 	public int calculateScore() {
-		//TODO: Determine scores for each row and column, including Blackjack combos, busts, etc.
-		int score_sum = 0;
+		int scoreSum = 0;
+		int tempSum = 0;
+		int aceCount = 0;
+		
+		// Calculate first row sum
 		for (int i = 0; i < 5; i++) {
-			if (i < 4) {
-				score_sum += 1; // STUB row_points[i] + column_points[i];
-			} else {
-				// row_points[4] would be out-of-bounds
-				score_sum += 1; // STUB column_points[i];
+			if (board[i].value.charAt(0) == 'A') {
+				aceCount++;
+			}
+			tempSum += board[i].points;
+		}
+		scoreSum += getRowOrColPoints(tempSum, aceCount);
+		aceCount = 0;
+		tempSum = 0;
+		
+		// Calculate second row sum
+		for (int i = 5; i < 10; i++) {
+			if (board[i].value.charAt(0) == 'A') {
+				aceCount++;
+			}
+			tempSum += board[i].points;
+		}
+		scoreSum += getRowOrColPoints(tempSum, aceCount);
+		aceCount = 0;
+		tempSum = 0;
+		
+		// Calculate third row sum
+		for (int i = 10; i < 13; i++) {
+			if (board[i].value.charAt(0) == 'A') {
+				aceCount++;
+			}
+			tempSum += board[i].points;
+		}
+		scoreSum += getRowOrColPoints(tempSum, aceCount);
+		aceCount = 0;
+		tempSum = 0;
+
+		// Calculate fourth row sum
+		for (int i = 13; i < 16; i++) {
+			if (board[i].value.charAt(0) == 'A') {
+				aceCount++;
+			}
+			tempSum += board[i].points;
+		}
+		scoreSum += getRowOrColPoints(tempSum, aceCount);
+		aceCount = 0;
+		tempSum = 0;
+		
+		// For calculating column sums, check for Blackjack combos in first and fifth columns
+		// Calculate first column sum
+		tempSum = board[0].points + board[5].points;
+		if (tempSum == 21) {
+			// Blackjack!
+			scoreSum += 10;
+		} else {
+			if (board[0].value.charAt(0) == 'A') {
+				aceCount++;
+			} 
+			if (board[5].value.charAt(0) == 'A') {
+				aceCount++;
+			}
+			scoreSum += getRowOrColPoints(tempSum, aceCount);
+		}
+		aceCount = 0;
+		tempSum = 0;
+		
+		// Calculate second column sum
+		int[] indices1 = {1, 6, 10, 13};
+		for (int element : indices1) {
+			tempSum += board[element].points;
+			if (board[element].value.charAt(0) == 'A') {
+				aceCount++;
 			}
 		}
-		return score_sum;
+		scoreSum += getRowOrColPoints(tempSum, aceCount);
+		aceCount = 0;
+		tempSum = 0;
+		
+		// Calculate third column sum
+		int[] indices2 = {2, 7, 11, 14};
+		for (int element : indices2) {
+			tempSum += board[element].points;
+			if (board[element].value.charAt(0) == 'A') {
+				aceCount++;
+			}
+		}
+		scoreSum += getRowOrColPoints(tempSum, aceCount);
+		aceCount = 0;
+		tempSum = 0;
+		
+		// Calculate fourth column sum
+		int[] indices3 = {3, 8, 12, 15};
+		for (int element : indices3) {
+			tempSum += board[element].points;
+			if (board[element].value.charAt(0) == 'A') {
+				aceCount++;
+			}
+		}
+		scoreSum += getRowOrColPoints(tempSum, aceCount);
+		aceCount = 0;
+		tempSum = 0;
+		
+		// Calculate fifth column sum
+		tempSum = board[4].points + board[9].points;
+		if (tempSum == 21) {
+			// Blackjack!
+			scoreSum += 10;
+		} else {
+			if (board[4].value.charAt(0) == 'A') {
+				aceCount++;
+			} 
+			if (board[9].value.charAt(0) == 'A') {
+				aceCount++;
+			}
+			scoreSum += getRowOrColPoints(tempSum, aceCount);
+		}
+		return scoreSum;
 	}
 	
 	/* 
