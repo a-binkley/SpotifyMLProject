@@ -2,8 +2,6 @@ import java.util.*;
 
 public class BlackjackSolitaire {
 	public static Card[] board;
-	public static int[] column_points = {0, 0, 0, 0, 0};
-	public static int[] row_points = {0, 0, 0, 0};
 	
 	
 	public void resetBoard() {
@@ -83,54 +81,7 @@ public class BlackjackSolitaire {
 			System.out.println();
 		}
 	}
-	
-	/*
-	 * Adds the point value of the input Card to the corresponding row sum
-	 */
-	public void updateRowValue(Card c, int location) {
-		// TODO: write logic for Blackjack combos, busting, etc.
-		if (location < 6) {
-			// First row
-			row_points[0] += c.points;
-		} else if (location < 11) {
-			// Second row
-			row_points[1] += c.points;
-		} else if (location < 14) {
-			// Third row
-			row_points[2] += c.points;
-		} else if (location < 17) {
-			// Fourth row
-			row_points[3] += c.points;
-		} else {
-			// Discard square
-			
-		}
-	}
-	
-	/*
-	 * Adds the point value of the input Card to the corresponding column sum
-	 */
-	public void updateColValue(Card c, int location) {
-		// TODO: write logic for Blackjack combos, busting, etc.
-		if (location == 1 || location == 6) {
-			// First column
-			column_points[0] += c.points;
-		} else if (location % 7 == 0 || location == 2 || location == 11) {
-			// Second column
-			column_points[1] += c.points;
-		} else if (location == 3 || location == 8 || location == 12 || location == 15) {
-			// Third column
-			column_points[2] += c.points;
-		} else if (location == 4 || location == 9 || location == 13 || location == 16) {
-			// Fourth column
-			column_points[3] += c.points;
-		} else if (location == 5 || location == 10) {
-			// Fifth column
-			column_points[4] += c.points;
-		}
-	}
-	
-	
+
 	/*
 	 * Allows the player to pick where they want the current top card to be placed on the board
 	 */
@@ -143,8 +94,6 @@ public class BlackjackSolitaire {
 		}
 		// If the target is valid, place the card there and update board_filled and point arrays
 		board[location-1] = c;
-		updateRowValue(c, location);
-		updateColValue(c, location);
 		return true;
 	}
 	
@@ -152,13 +101,14 @@ public class BlackjackSolitaire {
 	 * Calculate the final score for the game
 	 */
 	public int calculateScore() {
+		//TODO: Determine scores for each row and column, including Blackjack combos, busts, etc.
 		int score_sum = 0;
 		for (int i = 0; i < 5; i++) {
 			if (i < 4) {
-				score_sum += row_points[i] + column_points[i];
+				score_sum += 1; // STUB row_points[i] + column_points[i];
 			} else {
 				// row_points[4] would be out-of-bounds
-				score_sum += column_points[i];
+				score_sum += 1; // STUB column_points[i];
 			}
 		}
 		return score_sum;
@@ -203,7 +153,8 @@ public class BlackjackSolitaire {
 			}
 		}
 		
-		// The game is over and score will be calculated
+		s.close();
+
 		System.out.println("Game over! Final score: " + calculateScore());
 	}
 }
