@@ -39,90 +39,57 @@ class HangmanTester {
 	}
 	
 	@Test
-	void testMakeHash() {
+	void testEvilSwapFirstRound() {
 		setUp();
 		ArrayList<String> sameLenWordsTest = new ArrayList<>();
-		File f = new File("src/short_list.txt");
-		Scanner s = null;
-		try {
-			s = new Scanner(f);
-			while (s.hasNextLine()) {
-				String word = s.nextLine();
-				if (word.length() == 4) {
-					sameLenWordsTest.add(word.toUpperCase());
-				}
+		for (String w : Hangman.getWords()) {
+			if (w.length() == 4) {
+				sameLenWordsTest.add(w);
 			}
-		} catch (FileNotFoundException e) {
-			
 		}
 		Hangman.setSameLenWords(sameLenWordsTest);
-		HashMap<String, ArrayList<String>> testHash = new HashMap<>();
-		String oldWord = "_I__";
-		ArrayList<String> values = new ArrayList<>();
-		testHash.put("EI__", new ArrayList<String>());
-		testHash.put("_IE_", new ArrayList<String>());
-		values.add("BITE");
-		values.add("FIVE");
-		testHash.put("_I_E", values);
-		values = new ArrayList<>();
-		values.add("MINT");
-		values.add("WITH");
-		values.add("WILD");
-		testHash.put("_I__", values);
-		assertEquals(testHash, Hangman.makeHash(oldWord, 'E'));
+		String newWord = Hangman.evilSwap("____", 'E');
+		sameLenWordsTest = Hangman.getSameLenWords();
+		assertEquals(false, sameLenWordsTest.contains("BITE"));
+		assertEquals(true, sameLenWordsTest.contains("COIL"));
+		assertEquals(false, sameLenWordsTest.contains("FIVE"));
+		assertEquals(true, sameLenWordsTest.contains("FOUR"));
+		assertEquals(true, sameLenWordsTest.contains("JUMP"));
+		assertEquals(false, sameLenWordsTest.contains("MAKE"));
+		assertEquals(true, sameLenWordsTest.contains("MINT"));
+		assertEquals(true, sameLenWordsTest.contains("ROIL"));
+		assertEquals(false, sameLenWordsTest.contains("SEXY"));
+		assertEquals(true, sameLenWordsTest.contains("TOLD"));
+		assertEquals(true, sameLenWordsTest.contains("WILD"));
+		assertEquals(true, sameLenWordsTest.contains("WITH"));
+		assertEquals(true, sameLenWordsTest.contains(newWord));
 	}
 	
 	@Test
-	void testSetNewWords() {
+	void testEvilSwapLaterRound() {
 		setUp();
 		ArrayList<String> sameLenWordsTest = new ArrayList<>();
-		File f = new File("src/short_list.txt");
-		Scanner s = null;
-		try {
-			s = new Scanner(f);
-			while (s.hasNextLine()) {
-				String word = s.nextLine();
-				if (word.length() == 5) {
-					sameLenWordsTest.add(word.toUpperCase());
-				}
+		for (String w : Hangman.getWords()) {
+			if (w.length() == 4) {
+				sameLenWordsTest.add(w);
 			}
-		} catch (FileNotFoundException e) {
-			
 		}
 		Hangman.setSameLenWords(sameLenWordsTest);
-		HashMap<String, ArrayList<String>> testHash = new HashMap<>();
-		// TODO: determine how to hit coverage of lines 123-130
-		String oldWord = "B____";
-		ArrayList<String> values = new ArrayList<>();
-		values.add("BOOKS");
-		testHash.put("BO___", values);
-		values.add("BOOKS");
-		values.add("BLOOD");
-		values.add("BROOD");
-		testHash.put("B_O__", values);
-		values.remove("BOOKS");
-		testHash.put("B__O_", values);
-		testHash.put("B___O", new ArrayList<>());
-		assertEquals(testHash.get("B_O__"), Hangman.setNewWords(oldWord, 
-				Hangman.makeHash(oldWord, 'O')));
-	}
-	
-	@Test
-	void testSetNewWordsBadInput() {
-		setUp();
-		
-	}
-	
-	@Test
-	void testEvilSwap() {
-		setUp();
-		assertEquals("MINT", Hangman.evilSwap("_I__", 'E'));
-	}
-	
-	@Test
-	void testEvilSwapBadInput() {
-		setUp();
-		
+		String newWord = Hangman.evilSwap("_I__", 'E');
+		sameLenWordsTest = Hangman.getSameLenWords();
+		assertEquals(false, sameLenWordsTest.contains("BITE"));
+		assertEquals(false, sameLenWordsTest.contains("COIL"));
+		assertEquals(false, sameLenWordsTest.contains("FIVE"));
+		assertEquals(false, sameLenWordsTest.contains("FOUR"));
+		assertEquals(false, sameLenWordsTest.contains("JUMP"));
+		assertEquals(false, sameLenWordsTest.contains("MAKE"));
+		assertEquals(true, sameLenWordsTest.contains("MINT"));
+		assertEquals(false, sameLenWordsTest.contains("ROIL"));
+		assertEquals(false, sameLenWordsTest.contains("SEXY"));
+		assertEquals(false, sameLenWordsTest.contains("TOLD"));
+		assertEquals(true, sameLenWordsTest.contains("WILD"));
+		assertEquals(true, sameLenWordsTest.contains("WITH"));
+		assertEquals(true, sameLenWordsTest.contains(newWord));
 	}
 	
 	@Test
