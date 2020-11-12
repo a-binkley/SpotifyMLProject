@@ -9,8 +9,8 @@ public class Hangman {
 	/**
 	 * Populates the set of words Hangman can choose from
 	 */
-	public static void makeWordList() {
-		DictionaryReader dr = new DictionaryReader("src/engDictionary.txt");
+	public static void makeWordList(String dictionary) {
+		DictionaryReader dr = new DictionaryReader(dictionary);
 		words = dr.getWordList();
 	}
 
@@ -215,5 +215,29 @@ public class Hangman {
 			System.out.println("You win! Word was '" + chosenWordStr + "'");
 		}
 		scnr.close();
+	}
+
+	public static ArrayList<String> getWords() {
+		return words;
+	}
+
+	public static ArrayList<String> getSameLenWords() {
+		return sameLenWords;
+	}
+	
+	public static void setSameLenWords(ArrayList<String> arr) {
+		sameLenWords = arr;
+	}
+
+	public static ArrayList<Character> getGuessedLetters() {
+		return guessedLetters;
+	}
+
+	public static ArrayList<Character> getIncorrectGuesses() {
+		return incorrectGuesses;
+	}
+	
+	public static void setIncorrectGuesses(ArrayList<Character> i) {
+		incorrectGuesses = i;
 	}
 }
