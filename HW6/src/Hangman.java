@@ -174,6 +174,10 @@ public class Hangman {
 	public static ArrayList<String> getWords() {
 		return words;
 	}
+	
+	public static void setWords(ArrayList<String> w) {
+		words = w;
+	}
 
 	public static ArrayList<String> getSameLenWords() {
 		return sameLenWords;
@@ -181,14 +185,6 @@ public class Hangman {
 	
 	public static void setSameLenWords(ArrayList<String> arr) {
 		sameLenWords = arr;
-	}
-
-	public static ArrayList<Character> getGuessedLetters() {
-		return guessedLetters;
-	}
-
-	public static ArrayList<Character> getIncorrectGuesses() {
-		return incorrectGuesses;
 	}
 	
 	public static void setIncorrectGuesses(ArrayList<Character> i) {

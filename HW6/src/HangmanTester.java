@@ -2,9 +2,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 import java.io.*;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // Dictates the order of the tests
+													  // so changes made in later tests
+													  // don't mess up earlier ones
 class HangmanTester {
 	ArrayList<String> testWords;
 	ByteArrayOutputStream outContent;
@@ -17,6 +19,7 @@ class HangmanTester {
 	}
 	
 	@Test
+	@Order(1)
 	void testDisplayState() {
 		setUp();
 		System.setOut(new PrintStream(outContent));
@@ -26,6 +29,7 @@ class HangmanTester {
 	}
 	
 	@Test
+	@Order(2)
 	void testDisplayStateWithIncorrect() {
 		setUp();
 		ArrayList<Character> incorrect = new ArrayList<>();
@@ -39,6 +43,7 @@ class HangmanTester {
 	}
 	
 	@Test
+	@Order(3)
 	void testEvilSwapFirstRound() {
 		setUp();
 		ArrayList<String> sameLenWordsTest = new ArrayList<>();
@@ -66,6 +71,7 @@ class HangmanTester {
 	}
 	
 	@Test
+	@Order(4)
 	void testEvilSwapLaterRound() {
 		setUp();
 		ArrayList<String> sameLenWordsTest = new ArrayList<>();
@@ -93,8 +99,40 @@ class HangmanTester {
 	}
 	
 	@Test
-	void testPlay() {
+	@Order(5)
+	void testPlayWin() {
 		setUp();
+		InputStream sysInBackup = System.in;
+		ByteArrayInputStream in = new ByteArrayInputStream("_ ff i e w l e d t h".getBytes());
+		System.setIn(in);
+		ArrayList<String> testWords4 = new ArrayList<>();
+		for (String word : testWords) {
+			if (word.length() == 4) {
+				testWords4.add(word);
+			}
+		}
+		Hangman.setWords(testWords4); //Allows more controlled testing
+		Hangman.play();
 		
+		System.setIn(sysInBackup);
+	}
+	
+	@Test
+	@Order(6)
+	void testPlayLose() {
+		setUp();
+		InputStream sysInBackup = System.in;
+		ByteArrayInputStream in = new ByteArrayInputStream("_ ff i e w l e d q z v x r p h".getBytes());
+		System.setIn(in);
+		ArrayList<String> testWords4 = new ArrayList<>();
+		for (String word : testWords) {
+			if (word.length() == 4) {
+				testWords4.add(word);
+			}
+		}
+		Hangman.setWords(testWords4); //Allows more controlled testing
+		Hangman.play();
+		
+		System.setIn(sysInBackup);
 	}
 }
