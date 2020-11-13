@@ -10,7 +10,10 @@ public class DictionaryReader {
 		try {
 			scnr = new Scanner(f);
 			while (scnr.hasNextLine()) {
-				wordList.add(scnr.nextLine().toUpperCase());
+				String nextWord = scnr.nextLine(); //TODO: change back to any length
+				if (nextWord.length() == 8) {
+					wordList.add(nextWord.toUpperCase());
+				}
 			}
 			scnr.close();
 		} catch (FileNotFoundException e) {

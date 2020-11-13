@@ -42,41 +42,53 @@ public class Hangman {
 	 * @param letter
 	 * @return
 	 */
-	public static String evilSwap(String oldWord, char letter) {
+	public static String evilSwap(String displayWord, char letter) {
 		HashMap<String, ArrayList<String>> wordFamilies = new HashMap<>();
 		// populate the HashMap keys
-		for (int i = 0; i < oldWord.length(); i++) {
-			String key = oldWord;
-			if (oldWord.charAt(i) == '_') {
+		for (int i = 0; i < displayWord.length(); i++) {
+			String key = displayWord;
+			if (displayWord.charAt(i) == '_') {
 				key = key.substring(0, i) + letter + key.substring(i+1);
 			} else {
 				continue;
 			}
 			wordFamilies.put(key, new ArrayList<>());
 		}
-		wordFamilies.put(oldWord, new ArrayList<>());
+		wordFamilies.put(displayWord, new ArrayList<>());
 		// populate the values for each key
 		for (String key : wordFamilies.keySet()) {
 			ArrayList<String> values = new ArrayList<>();
 			for (String word : sameLenWords) {
 				boolean isCandidate = true;
+				// the all-blank key ("_____")
 				if (!key.contains(letter + "")) {
-					if (word.contains(letter + "")) {
-						continue;
+					if (!word.contains(letter + "")) {
+						for (int j = 0; j < displayWord.length(); j++) {
+							if (displayWord.charAt(j) != '_' && word.charAt(j) != displayWord.charAt(j)) {
+								isCandidate = false;
+								break;
+							}
+						}
+						if (isCandidate) {
+							values.add(word);
+						}
 					}
+					continue;
 				}
 				// add a word if it matches the key pattern
 				for (int i = 0; i < word.length(); i++) {
 					if (key.charAt(i) == '_') {
 						// invalid if key or guessedLetters contain current letter
-						if (key.contains(word.charAt(i) + "") || guessedLetters.contains(word.charAt(i)) 
+						if (displayWord.contains(word.charAt(i) + "") || guessedLetters.contains(word.charAt(i))
 								|| incorrectGuesses.contains(word.charAt(i))) {
 							isCandidate = false;
+							//System.out.println("Key " + key + " Disqualified '" + word + "' due to pre-existing letter");
 							break;
 						}
 					} else {
 						if (key.charAt(i) != word.charAt(i)) {
 							isCandidate = false;
+							//System.out.println("Key " + key + " Disqualified '" + word + "' due to char mismatch");
 							break;
 						}
 					}
@@ -89,15 +101,18 @@ public class Hangman {
 		}
 
 		int largest = 0;
+		int valueListSum = 0;
 		String family = "";
 		for (String k : wordFamilies.keySet()) {
-			System.out.println(k + " (size = " + wordFamilies.get(k).size() + "): " + wordFamilies.get(k));
+			System.out.println(k + " (size = " + wordFamilies.get(k).size() + "): " + wordFamilies.get(k)); //TEMP
+			valueListSum += wordFamilies.get(k).size();
 			if (wordFamilies.get(k).size() > largest) {
 				largest = wordFamilies.get(k).size();
 				family = k;
 				System.out.println("set new family: " + k);
 			}
 		}
+		System.out.println("Word change: " + (valueListSum - sameLenWords.size())); //TEMP
 		sameLenWords = wordFamilies.get(family);
 		return sameLenWords.get((int) (Math.random() * sameLenWords.size()));
 	}
@@ -134,24 +149,25 @@ public class Hangman {
 				System.out.println("Invalid guess. Please try again:");
 				continue;
 			}
-			// if the user entry is valid, check it against the word and change the word accordingly
+			// if the user entry is valid, check it against 
+			// the chosen word and change the word accordingly
 			char guess = userGuess.toUpperCase().charAt(0);
 			if (guessedLetters.contains(guess) || incorrectGuesses.contains(guess)) {
 				System.out.println("Already guessed that letter. Please try again:");
 				continue;
 			}
-			// Evil part - swap to a new word that maintains the existing guessed letters and their locations
-			System.out.println("Word fed into evilSwap: " + displayWord);
+			// Evil part - swap to a new word that maintains 
+			// the existing guessed letters and their locations
 			chosenWord = evilSwap(displayWord, guess);
-			System.out.println("New word: " + chosenWord);
-			
+			System.out.println("New word: " + chosenWord); //TEMP
 			// update the board
 			if (chosenWord.contains(guess + "")) {
 				guessedLetters.add(guess);
 				// update the displayWord
 				for (int i = 0; i < chosenWord.length(); i++) {
 					if (guessedLetters.contains(chosenWord.charAt(i))) {
-						displayWord = displayWord.substring(0, i) + chosenWord.charAt(i) + displayWord.substring(i + 1);
+						displayWord = displayWord.substring(0, i) + 
+								chosenWord.charAt(i) + displayWord.substring(i + 1);
 					}
 				}
 			} else {
