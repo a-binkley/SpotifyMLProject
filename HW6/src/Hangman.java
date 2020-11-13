@@ -56,63 +56,39 @@ public class Hangman {
 		}
 		wordFamilies.put(displayWord, new ArrayList<>());
 		// populate the values for each key
-		for (String key : wordFamilies.keySet()) {
-			ArrayList<String> values = new ArrayList<>();
-			for (String word : sameLenWords) {
+		for (String word : sameLenWords) {
+			for (String key : wordFamilies.keySet()) {
 				boolean isCandidate = true;
-				// the all-blank key ("_____")
-				if (!key.contains(letter + "")) {
-					if (!word.contains(letter + "")) {
-						for (int j = 0; j < displayWord.length(); j++) {
-							if (displayWord.charAt(j) != '_' && word.charAt(j) != displayWord.charAt(j)) {
-								isCandidate = false;
-								break;
-							}
-						}
-						if (isCandidate) {
-							values.add(word);
-						}
-					}
-					continue;
-				}
-				// add a word if it matches the key pattern
-				for (int i = 0; i < word.length(); i++) {
+				for (int i = 0; i < key.length(); i++) {
 					if (key.charAt(i) == '_') {
-						// invalid if key or guessedLetters contain current letter
-						if (displayWord.contains(word.charAt(i) + "") || guessedLetters.contains(word.charAt(i))
-								|| incorrectGuesses.contains(word.charAt(i))) {
+						if (word.charAt(i) == letter && !key.equals(displayWord)) {
+							continue;
+						}
+						if (guessedLetters.contains(word.charAt(i)) || incorrectGuesses.contains(word.charAt(i))) { 
 							isCandidate = false;
-							//System.out.println("Key " + key + " Disqualified '" + word + "' due to pre-existing letter");
 							break;
 						}
-					} else {
-						if (key.charAt(i) != word.charAt(i)) {
-							isCandidate = false;
-							//System.out.println("Key " + key + " Disqualified '" + word + "' due to char mismatch");
-							break;
-						}
+					} else if (key.charAt(i) != word.charAt(i)) {
+						isCandidate = false;
+						break;
 					}
 				}
 				if (isCandidate) {
-					values.add(word);
+					wordFamilies.get(key).add(word);
 				}
 			}
-			wordFamilies.replace(key, values);
 		}
 
 		int largest = 0;
-		int valueListSum = 0;
 		String family = "";
 		for (String k : wordFamilies.keySet()) {
-			System.out.println(k + " (size = " + wordFamilies.get(k).size() + "): " + wordFamilies.get(k)); //TEMP
-			valueListSum += wordFamilies.get(k).size();
+			//System.out.println(k + " (size = " + wordFamilies.get(k).size() + "): " + wordFamilies.get(k)); //TEMP
 			if (wordFamilies.get(k).size() > largest) {
 				largest = wordFamilies.get(k).size();
 				family = k;
-				System.out.println("set new family: " + k);
+				//System.out.println("set new family: " + k); //TEMP
 			}
 		}
-		System.out.println("Word change: " + (valueListSum - sameLenWords.size())); //TEMP
 		sameLenWords = wordFamilies.get(family);
 		return sameLenWords.get((int) (Math.random() * sameLenWords.size()));
 	}
@@ -156,13 +132,13 @@ public class Hangman {
 				System.out.println("Already guessed that letter. Please try again:");
 				continue;
 			}
+			guessedLetters.add(guess);
 			// Evil part - swap to a new word that maintains 
 			// the existing guessed letters and their locations
 			chosenWord = evilSwap(displayWord, guess);
-			System.out.println("New word: " + chosenWord); //TEMP
+			//System.out.println("New word: " + chosenWord); //TEMP
 			// update the board
 			if (chosenWord.contains(guess + "")) {
-				guessedLetters.add(guess);
 				// update the displayWord
 				for (int i = 0; i < chosenWord.length(); i++) {
 					if (guessedLetters.contains(chosenWord.charAt(i))) {
