@@ -82,11 +82,9 @@ public class Hangman {
 		int largest = 0;
 		String family = "";
 		for (String k : wordFamilies.keySet()) {
-			//System.out.println(k + " (size = " + wordFamilies.get(k).size() + "): " + wordFamilies.get(k)); //TEMP
 			if (wordFamilies.get(k).size() > largest) {
 				largest = wordFamilies.get(k).size();
 				family = k;
-				//System.out.println("set new family: " + k); //TEMP
 			}
 		}
 		sameLenWords = wordFamilies.get(family);
@@ -136,7 +134,6 @@ public class Hangman {
 			// Evil part - swap to a new word that maintains 
 			// the existing guessed letters and their locations
 			chosenWord = evilSwap(displayWord, guess);
-			//System.out.println("New word: " + chosenWord); //TEMP
 			// update the board
 			if (chosenWord.contains(guess + "")) {
 				// update the displayWord
