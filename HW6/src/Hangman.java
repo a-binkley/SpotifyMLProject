@@ -44,41 +44,21 @@ public class Hangman {
 	 */
 	public static String evilSwap(String displayWord, char letter) {
 		HashMap<String, ArrayList<String>> wordFamilies = new HashMap<>();
-		// populate the HashMap keys
-		for (int i = 0; i < displayWord.length(); i++) {
-			String key = displayWord;
-			if (displayWord.charAt(i) == '_') {
-				key = key.substring(0, i) + letter + key.substring(i+1);
-			} else {
-				continue;
-			}
-			wordFamilies.put(key, new ArrayList<>());
-		}
-		wordFamilies.put(displayWord, new ArrayList<>());
-		// populate the values for each key
+		// populate the HashMap
 		for (String word : sameLenWords) {
-			for (String key : wordFamilies.keySet()) {
-				boolean isCandidate = true;
-				for (int i = 0; i < key.length(); i++) {
-					if (key.charAt(i) == '_') {
-						if (word.charAt(i) == letter && !key.equals(displayWord)) {
-							continue;
-						}
-						if (guessedLetters.contains(word.charAt(i)) || incorrectGuesses.contains(word.charAt(i))) { 
-							isCandidate = false;
-							break;
-						}
-					} else if (key.charAt(i) != word.charAt(i)) {
-						isCandidate = false;
-						break;
-					}
-				}
-				if (isCandidate) {
-					wordFamilies.get(key).add(word);
+			String familyStr = word;
+			for (int i = 0; i < familyStr.length(); i++) {
+				if (!guessedLetters.contains(familyStr.charAt(i)) && !incorrectGuesses.contains(familyStr.charAt(i))) {
+					familyStr = familyStr.substring(0, i) + "_" + familyStr.substring(i+1);
 				}
 			}
+			if (!wordFamilies.keySet().contains(familyStr)) {
+				wordFamilies.put(familyStr, new ArrayList<String>());
+			}
+			wordFamilies.get(familyStr).add(word);
 		}
-
+		
+		// determine the largest word family
 		int largest = 0;
 		String family = "";
 		for (String k : wordFamilies.keySet()) {
