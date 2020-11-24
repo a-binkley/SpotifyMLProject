@@ -1,4 +1,0 @@
-This is a test file
-It should be able to be read by TextFileReadingExperiment.java
-
-Yay?
