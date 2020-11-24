@@ -1,16 +1,23 @@
 import java.util.*;
 
 public class Dice {
+	private int numSides;
+	private String color;
 
 	public int roll() {
 		Random r = new Random();
-		int out = r.nextInt(6);
+		int out = r.nextInt(numSides);
 		return out+1;
 	}
 	
+	public Dice(int sides, String color) {
+		numSides = sides;
+		this.color = color;
+	}
+	
 	public static void main(String[] args) {
-		Dice d1 = new Dice();
-		Dice d2 = new Dice();
+		Dice d1 = new Dice(6, "white");
+		Dice d2 = new Dice(6, "green");
 		
 		int even_count = 0;
 		int sum_count = 0;
@@ -26,5 +33,13 @@ public class Dice {
 		}
 		System.out.println("Probability of rolling even sum is approximately " + (1.0 * even_count / roll_count));
 		System.out.println("Average sum value is approximately " + (1.0 * sum_count / roll_count));
+	}
+	
+	public int getNumSides() {
+		return numSides;
+	}
+	
+	public String getColor() {
+		return color;
 	}
 }
