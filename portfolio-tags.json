@@ -1,4 +1,5 @@
 {
   "title": "Spotify ML Project",
-  "tagline": "Exploring data relationships and predicting track popularity"
+  "tagline": "Exploring data relationships and predicting track popularity",
+  "bootstrapIcon": "spotify"
 }
